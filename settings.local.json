@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm list *)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest *)",
+      "Bash(python3 -c ' *)",
+      "Bash(mv /tmp/components.json /home/odin/Documents/repo/mtns-academy/mtns-academy-frontend/components.json)",
+      "Bash(npx tsr *)",
+      "Bash(./node_modules/.bin/tsr generate *)",
+      "Bash(npx @tanstack/router-plugin generate)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('bin',{}\\), indent=2\\)\\); print\\('exports:', list\\(d.get\\('exports',{}\\).keys\\(\\)\\)[:10]\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(npx vite *)",
+      "Bash(npx tsc *)",
+      "Bash(uv add *)",
+      "Bash(python -c \"from app.core.email import send_otp_email; print\\('email module OK'\\)\")",
+      "Bash(python -c \"from app.modules.otp.infrastructure.event_handlers import create_generate_login_otp_handler; print\\('event handler OK'\\)\")",
+      "Bash(.venv/bin/python -c \"from app.core.email import send_otp_email; print\\('email module OK'\\)\")",
+      "Bash(.venv/bin/python -c \"from app.modules.otp.infrastructure.event_handlers import create_generate_login_otp_handler; print\\('event handler OK'\\)\")",
+      "Bash(docker compose up *)",
+      "Bash(.venv/bin/python *)",
+      "Bash(uv run *)",
+      "Bash(/home/odin/Documents/repo/mtns-academy/mtns-academy-backend/.venv/bin/python -c \"import uuid_utils; print\\('ok'\\)\")",
+      "Bash(/home/odin/Documents/repo/mtns-academy/mtns-academy-backend/.venv/bin/pytest --version)",
+      "Bash(VIRTUAL_ENV=/home/odin/Documents/repo/mtns-academy/mtns-academy-backend/.venv /home/odin/Documents/repo/mtns-academy/mtns-academy-backend/.venv/bin/python *)",
+      "Bash(/home/odin/Documents/repo/mtns-academy/mtns-academy-backend/.venv/bin/python *)",
+      "Bash(.venv/bin/ruff check *)",
+      "Bash(.venv/bin/ruff format *)",
+      "Bash(node *)",
+      "Bash(awk '-F: ' '{print $NF}')",
+      "Bash(uv pip *)",
+      "Bash(uv sync *)",
+      "Bash(git *)",
+      "Bash(fc-list :lang=bn)"
+    ]
+  }
+}
