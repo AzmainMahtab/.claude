@@ -3,13 +3,19 @@
 ## Project Layout
 
 ```
-mtns-academy/
+repo/
 ├── mtns-academy-backend/   # FastAPI modular monolith (Python 3.14+, uv)
 ├── mtns-academy-frontend/  # React 19 SPA (Vite, TanStack Router/Query, shadcn)
+├── go-kit/                 # Go modular monolith starter kit (Hexagonal + DDD + CQRS)
 └── graphify-out/           # Knowledge graph — check this first on any task
 ```
 
-Full backend architecture rules live in `mtns-academy-backend/AGENTS.md`. Always read that file before touching backend code.
+Authoritative architecture rules live next to the code. Always read the relevant one before touching it:
+
+| Codebase | Rules file |
+|----------|------------|
+| `mtns-academy-backend/` | `mtns-academy-backend/AGENTS.md` |
+| `go-kit/` | `go-kit/AGENTS.md` |
 
 ---
 
@@ -68,12 +74,40 @@ Routes live under `src/routes/`. Auth-gated routes are nested inside `_authentic
 
 ---
 
+## Go Kit Stack (`go-kit/`)
+
+| Concern | Tool |
+|---------|------|
+| Language | Go 1.26+ |
+| Router | chi v5 + net/http |
+| DB | sqlx + pgx/v5 + PostgreSQL |
+| Cache / blacklist / rate limit | Redis (`go-redis/v9`) |
+| Passwords | Argon2id (`golang.org/x/crypto/argon2`) |
+| Tokens | **ES256 (ECDSA P-256) keypair** via `golang-jwt/v5` — never HS256 |
+| Events | `InMemoryEventBus` (`internal/shared/eventbus/`) |
+| Audit | NATS JetStream → durable worker → partitioned `audit_log` |
+| Migrations | Goose (SQL) |
+| Quality | gofmt + go vet + golangci-lint + `go test -race` |
+
+Architecture: **Modular Monolith + Hexagonal (Ports & Adapters) + DDD + CQRS**, sliced **vertically** by bounded context. Dependency rule: `presentation/ → application/ → domain/`; `infrastructure/` implements ports declared in `domain/`. `domain/` has zero framework imports.
+
+Non-negotiables:
+- Ports are declared by the consumer inside its own context — no central `ports/` package.
+- One error model: return `*apperrors.AppError`, map with `responses.HandleError`. No per-module `mapError`.
+- Domain identity is the public `uuid.UUID`; the `BIGSERIAL` internal id never leaves `infrastructure/persistence/`.
+- Access vs refresh tokens are distinguished by a `typ` claim, checked on every parse.
+
+Use `/go-kit` (skill) for the step-by-step recipe, `/go-coder` (agent) to implement.
+
+---
+
 ## Which Agent to Reach For
 
 | Task | Agent |
 |------|-------|
 | Architectural decisions, new module design, event bus wiring | `/architect` |
-| Any backend feature, use case, endpoint, migration | `/fastapi-coder` |
+| Any FastAPI feature, use case, endpoint, migration | `/fastapi-coder` |
+| Any Go / go-kit context, use case, endpoint, adapter, migration | `/go-coder` |
 | Any frontend component, route, form, query | `/react-coder` |
 | PR review before merging | `/code-reviewer` |
 | Auth, token, or injection audit | `/security-reviewer` |
@@ -85,7 +119,8 @@ Routes live under `src/routes/`. Auth-gated routes are nested inside `_authentic
 - NEVER add comments unless asked
 - NEVER create README/documentation files unless asked
 - NEVER commit unless asked
-- Run `ruff check` + `ruff format` + `mypy` before finishing backend work
+- Run `ruff check` + `ruff format` + `mypy` before finishing FastAPI work
+- Run `make check` (gofmt + vet + golangci-lint + race tests) before finishing go-kit work
 - Run `npx tsc --noEmit` before finishing frontend work
-- Preserve existing naming conventions (see `AGENTS.md`)
+- Preserve existing naming conventions (see the relevant `AGENTS.md`)
 - **Always**: graphify first → read files second → write code third
