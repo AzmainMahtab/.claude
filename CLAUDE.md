@@ -7,6 +7,8 @@ repo/
 ├── mtns-academy-backend/   # FastAPI modular monolith (Python 3.14+, uv)
 ├── mtns-academy-frontend/  # React 19 SPA (Vite, TanStack Router/Query, shadcn)
 ├── go-kit/                 # Go modular monolith starter kit (Hexagonal + DDD + CQRS)
+├── nest-kit/               # NestJS modular monolith starter kit (Hexagonal + DDD + CQRS)
+├── <name>-web/             # Astro sites — marketing/content. Design records in .claude-project/design/
 └── graphify-out/           # Knowledge graph — check this first on any task
 ```
 
@@ -16,6 +18,9 @@ Authoritative architecture rules live next to the code. Always read the relevant
 |----------|------------|
 | `mtns-academy-backend/` | `mtns-academy-backend/AGENTS.md` |
 | `go-kit/` | `go-kit/AGENTS.md` |
+| `nest-kit/` | `nest-kit/AGENTS.md` |
+
+Per-stack detail lives in its own file, imported below: `FASTAPI.md`, `REACT.md`, `GO-KIT.md`, `NEST-KIT.md`.
 
 ---
 
@@ -38,66 +43,43 @@ Only after running the graph should you read files or write code.
 
 Key god nodes (most connected): `User`, `LoginUseCase`, `RegisterUserUseCase`, `IEventBus`, `InMemoryUserRepository`, `UserStatus`.
 
+The graph does **not** cover `nest-kit/` — see `NEST-KIT.md` for what to read instead.
+
 ---
 
 ## Backend Stack
 
-| Concern | Tool |
-|---------|------|
-| Language | Python 3.14+, `uv` |
-| Framework | FastAPI (async) + Pydantic v2 |
-| ORM | SQLAlchemy 2.0 (async) + PostgreSQL |
-| Cache / blacklist | Redis |
-| Passwords | Argon2id (`passlib[argon2]`) |
-| Tokens | PyJWT (HS256) |
-| Migrations | Alembic (async) |
-| Events | `InMemoryEventBus` (in `app/core/event_bus.py`) |
-| Quality | ruff + mypy + pre-commit |
-
-Architecture: **Modular Monolith + Clean Architecture + DDD + CQRS**. Dependency rule: `api/ → use_cases/ → domain/` only. `domain/` has zero framework imports.
+@FASTAPI.md
 
 ---
 
 ## Frontend Stack
 
-| Concern | Tool |
-|---------|------|
-| Framework | React 19 |
-| Routing | TanStack Router (file-based, `src/routes/`) |
-| Server state | TanStack Query v5 |
-| Forms | react-hook-form + Zod v4 |
-| UI | shadcn/ui + Radix UI + Tailwind CSS v4 |
-| HTTP | axios (`src/lib/api.ts`) |
-| Build | Vite 8 + TypeScript 6 |
+@REACT.md
 
-Routes live under `src/routes/`. Auth-gated routes are nested inside `_authenticated/`. Queries and mutations go in `src/lib/queries.ts`.
+---
+
+## Astro Sites (any `*-web/` marketing or content site)
+
+@ASTRO.md
+
+---
+
+## Design Practice (all projects)
+
+@DESIGN.md
 
 ---
 
 ## Go Kit Stack (`go-kit/`)
 
-| Concern | Tool |
-|---------|------|
-| Language | Go 1.26+ |
-| Router | chi v5 + net/http |
-| DB | sqlx + pgx/v5 + PostgreSQL |
-| Cache / blacklist / rate limit | Redis (`go-redis/v9`) |
-| Passwords | Argon2id (`golang.org/x/crypto/argon2`) |
-| Tokens | **ES256 (ECDSA P-256) keypair** via `golang-jwt/v5` — never HS256 |
-| Events | `InMemoryEventBus` (`internal/shared/eventbus/`) |
-| Audit | NATS JetStream → durable worker → partitioned `audit_log` |
-| Migrations | Goose (SQL) |
-| Quality | gofmt + go vet + golangci-lint + `go test -race` |
+@GO-KIT.md
 
-Architecture: **Modular Monolith + Hexagonal (Ports & Adapters) + DDD + CQRS**, sliced **vertically** by bounded context. Dependency rule: `presentation/ → application/ → domain/`; `infrastructure/` implements ports declared in `domain/`. `domain/` has zero framework imports.
+---
 
-Non-negotiables:
-- Ports are declared by the consumer inside its own context — no central `ports/` package.
-- One error model: return `*apperrors.AppError`, map with `responses.HandleError`. No per-module `mapError`.
-- Domain identity is the public `uuid.UUID`; the `BIGSERIAL` internal id never leaves `infrastructure/persistence/`.
-- Access vs refresh tokens are distinguished by a `typ` claim, checked on every parse.
+## Nest Kit Stack (`nest-kit/`)
 
-Use `/go-kit` (skill) for the step-by-step recipe, `/go-coder` (agent) to implement.
+@NEST-KIT.md
 
 ---
 
@@ -108,9 +90,40 @@ Use `/go-kit` (skill) for the step-by-step recipe, `/go-coder` (agent) to implem
 | Architectural decisions, new module design, event bus wiring | `/architect` |
 | Any FastAPI feature, use case, endpoint, migration | `/fastapi-coder` |
 | Any Go / go-kit context, use case, endpoint, adapter, migration | `/go-coder` |
+| Any NestJS / nest-kit context, use case, endpoint, adapter, migration | `/nest-coder` |
 | Any frontend component, route, form, query | `/react-coder` |
+| Any Astro page, section, island, content collection, or SEO/perf work | `/astro-coder` |
+| Lighthouse score below 100, or a perf/a11y/SEO audit of an Astro page | `/astro-auditor` |
+| Any visual design — page, system, redesign, reference research | `/designer` |
+| Design review before handing a design to code | `/design-reviewer` |
 | PR review before merging | `/code-reviewer` |
+| PR review of nest-kit specifically | `/nest-code-reviewer` |
 | Auth, token, or injection audit | `/security-reviewer` |
+| Auth, token, or RBAC audit of nest-kit specifically | `/nest-security-reviewer` |
+
+---
+
+## Project Records — read before starting, update as you go
+
+Every project keeps its durable, agent-readable records in one directory:
+
+- **`.claude-project/`** if it exists — this is the preferred location.
+- **`.project-doc/`** otherwise. Create it when a project has neither.
+
+Never invent a third location and never maintain both. Everything inside is
+plain Markdown (or plain YAML/JSON for data) and **harness-agnostic**, so Claude
+Code, opencode, Cursor, Aider and a human editor can all use it. No tool-specific
+formats, no "as Claude I…" phrasing.
+
+Standard layout: `context/`, `docs/`, `memory/` (DECISIONS, LEARNINGS,
+PREFERENCES), `plan/`, `status/`, `agents/`.
+
+These files are **input and output**. Read `docs/PROJECT_KNOWLEDGE.md`,
+`status/`, and `memory/DECISIONS.md` before starting; update `status/` and
+`memory/` as work lands. Stale status is worse than none.
+
+A root-level `AGENTS.md` should point at the records directory so non-Claude
+harnesses find it too.
 
 ---
 
@@ -119,8 +132,9 @@ Use `/go-kit` (skill) for the step-by-step recipe, `/go-coder` (agent) to implem
 - NEVER add comments unless asked
 - NEVER create README/documentation files unless asked
 - NEVER commit unless asked
-- Run `ruff check` + `ruff format` + `mypy` before finishing FastAPI work
-- Run `make check` (gofmt + vet + golangci-lint + race tests) before finishing go-kit work
-- Run `npx tsc --noEmit` before finishing frontend work
 - Preserve existing naming conventions (see the relevant `AGENTS.md`)
+- Run the stack's quality gate before finishing — each stack file names its own
 - **Always**: graphify first → read files second → write code third
+- **Astro sites**: never build a page without `DESIGN-GUIDELINES.md` and its page spec — run `/design-new` first
+- **Every design** produces `DESIGN-GUIDELINES.md` + a per-page spec with a component inventory and 390/768/1440 behaviour
+- Update the project's `.claude-project/` or `.project-doc/` records as work lands
