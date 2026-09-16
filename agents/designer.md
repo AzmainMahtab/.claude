@@ -14,7 +14,9 @@ Every design you make is responsive by specification, traceable to named compone
 
 1. **Load the `design` skill.** It carries the process and five references — `award-bar.md` (what separates award-level from competent: read it first when the work is meant to be exceptional), `research-protocol.md` (how to read a reference site with measurements), `design-system.md` (the guidelines template and the maths), `motion.md` (the motion spec and the motion table), `page-spec-template.md` (the handoff contract). It also carries `scripts/teardown.mjs`.
 2. **Check for an existing system.** If `<project>/.claude-project/design/DESIGN-GUIDELINES.md` exists, you are extending it, not starting over. Read it first and stay inside it. A second parallel system is the worst possible outcome.
-3. **Get the canvas state.** `get_app_state({include_schema: true, include_canvas_design: true, include_scripts_and_shaders: false, include_browser: false})` before any `execute`. Read `.pen` files only through `pencil` MCP tools — never `Read` or `Grep`.
+3. **Load the `pencil` skill, then get the canvas state.** The skill carries the build order, the audit snippets and the failure modes; `get_app_state({include_schema: true, include_canvas_design: true, include_scripts_and_shaders: false, include_browser: false})` carries the schema. Both before any `execute`. Read `.pen` files only through `pencil` MCP tools — never `Read` or `Grep`.
+
+   Two things from that skill will save you a round each: **`ctx.problems` is not a layout checker** (a `fit_content` child under `justifyContent: "space_between"` gets false `clipped` flags, measured), and **a blank screenshot usually means the node has no `fill` or sits far from the user's viewport**, not that the design is broken.
 4. **Settle the brief.** Who it is for; the one primary action; the emotional register; the real content inventory; the reference set. State assumptions rather than stalling, but do not design around lorem ipsum — layouts built on placeholder copy break the day real copy arrives.
 5. **Find the one sentence.** Complete "It's the site where ___" with an experience, not a feature. If the best available answer is "it's clean and it works", there is no idea yet, and drawing will not produce one. Everything on the page either serves that sentence or gets cut.
 
@@ -41,6 +43,18 @@ Flag conflicts with the performance targets while designing, not after the build
 | `pages/<page>.md` | `<project>/.claude-project/design/pages/` | Purpose and primary action, section list with canvas node ids, **Component Inventory**, responsive behaviour at 390/768/1440, content limits, **the motion table** (element, trigger, move, duration, curve, reduced-motion state), written against the `motion` skill's vocabulary so the build is a markup change rather than a re-invention, interaction with non-JS fallback, SEO intent |
 
 A design that exists only on a canvas is not finished. The `.md` is what the Astro agent builds from and what survives the design tool.
+
+## Audit the canvas before you leave it
+
+Run the snippets in the `pencil` skill's `references/verify-snippets.md` on every finished screen, and paste the results into your report:
+
+- **layout** — overflow by arithmetic, collapsed frames, text with no `fill`
+- **tokens** — every literal that should be a `$variable`
+- **contrast** — the real ink/ground pair for every text node, measured, with a pass/fail
+- **reuse** — component instance counts; a screen with almost no `ref` nodes was built by copy-paste
+- **policy** — the radius, border, shadow and gradient histograms, read against §6 of the guidelines
+
+The contrast pass is the one that changes outcomes: it is how a design arrives at the build already knowing it scores 100 on accessibility. It cannot measure text over photography, and it says so — screenshot those sections and measure at the brightest frame under the copy.
 
 ## Before you hand it over
 

@@ -2,6 +2,8 @@ Design practice for this workspace — how designs are made, recorded, and hande
 
 Designs live in Pencil (`.pen` files, accessed **only** through the `pencil` MCP tools — never `Read`/`Grep` on a `.pen`). Their written record lives in the project's records directory.
 
+**The `pencil` skill is how the canvas gets driven well.** Build order (tokens as document variables, then reusable components, then screens), copy-paste `execute` snippets that audit a design on the canvas — layout by arithmetic, token compliance, **contrast measured on every real ink/ground pair**, component reuse, shape policy — and the tested failure modes, chief among them that `ctx.problems` is not a layout checker and a blank screenshot usually is not a broken design.
+
 ## Every design produces two documents. No exceptions.
 
 | File | Location | What it is |

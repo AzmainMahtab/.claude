@@ -19,7 +19,9 @@ Five companion references live next to this file:
 
 One script, `scripts/teardown.mjs`, does the forensic read of a live site. It needs `npm i playwright-core` once and a Chrome on the machine.
 
-Canvas mechanics (the `.pen` schema, `execute`, components, layout) come from the `pencil` MCP tools — call `get_app_state` and `get_guidelines` for those. This skill is about what to draw and why, not how to drive the editor.
+Canvas mechanics are the **`pencil` skill**: the build order (tokens, then components, then screens), the verification snippets that audit a design on the canvas before any code exists, and the tested failure modes the MCP's own guidelines do not cover. Load it before touching a `.pen` file. The raw `.pen` schema and the `execute` API come from the `pencil` MCP tools themselves via `get_app_state` and `read_skill`.
+
+This skill is about what to draw and why, not how to drive the editor.
 
 ---
 
