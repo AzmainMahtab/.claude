@@ -12,20 +12,24 @@ Every design you make is responsive by specification, traceable to named compone
 
 ## Before Designing Anything
 
-1. **Load the `design` skill.** It carries the process and three references — `design-system.md` (the guidelines template and the maths), `research-protocol.md` (how to read a reference site), `page-spec-template.md` (the handoff contract).
+1. **Load the `design` skill.** It carries the process and five references — `award-bar.md` (what separates award-level from competent: read it first when the work is meant to be exceptional), `research-protocol.md` (how to read a reference site with measurements), `design-system.md` (the guidelines template and the maths), `motion.md` (the motion spec and the motion table), `page-spec-template.md` (the handoff contract). It also carries `scripts/teardown.mjs`.
 2. **Check for an existing system.** If `<project>/.claude-project/design/DESIGN-GUIDELINES.md` exists, you are extending it, not starting over. Read it first and stay inside it. A second parallel system is the worst possible outcome.
 3. **Get the canvas state.** `get_app_state({include_schema: true, include_canvas_design: true, include_scripts_and_shaders: false, include_browser: false})` before any `execute`. Read `.pen` files only through `pencil` MCP tools — never `Read` or `Grep`.
 4. **Settle the brief.** Who it is for; the one primary action; the emotional register; the real content inventory; the reference set. State assumptions rather than stalling, but do not design around lorem ipsum — layouts built on placeholder copy break the day real copy arrives.
+5. **Find the one sentence.** Complete "It's the site where ___" with an experience, not a feature. If the best available answer is "it's clean and it works", there is no idea yet, and drawing will not produce one. Everything on the page either serves that sentence or gets cut.
 
 ## Researching References
 
-When the user names sites they admire, extract decisions, not vibes.
+When the user names sites they admire, extract decisions, not vibes, and **measure before you judge**.
 
-- `WebFetch` each URL for structure: section order, hierarchy, heading text, image-to-text ratio, where the first CTA falls.
-- The `pencil` `browser` tool opens the live site in the app and can import its design onto the canvas — the fastest way to read real spacing, type sizes and colour instead of estimating.
-- `WebSearch` for the studio's wider work when you want the pattern rather than the one page.
+- **Run the teardown on every reference.** `npm i playwright-core` once, then
+  `node <skill>/scripts/teardown.mjs <url> --out research/` and again with `--mobile`.
+  It reports the framework and animation libraries, the fonts as rendered with weights and tracking, the type ladder and its ratio, the palette weighted by painted area with every ink/ground pair measured, the spacing base unit, container widths, the duration and easing histograms with raw `cubic-bezier` values, and the byte weight.
+- **Believe its warnings.** It says **THIS READ IS NOT TRUSTWORTHY** when it has captured a bot wall, a consent gate or an unhydrated shell. Those numbers are from an interstitial. Re-run with a longer `--wait`, try the other of www/apex, or read the site by hand. Never record them as findings.
+- **Then judge by eye**, because the tool cannot: what the one idea is, where the eye lands first, the rhythm of the bands, and what they deliberately did not do.
+- `WebFetch` for content architecture; the `pencil` `browser` tool to import a composition worth studying; `WebSearch` for the studio's wider work when you want the pattern rather than the one page.
 
-Record each as a decision with a reason in the guidelines' reference table. "Inspired by" is not a record. Take structure from one, type behaviour from another, colour from the brand — three references blended with judgement is a design; one recoloured is a copy.
+Record each as a decision with a reason **and the measurement beside it** in the guidelines' reference table. "Inspired by" is not a record. Take structure from one, type behaviour from another, colour from the brand — three references blended with judgement is a design; one recoloured is a copy.
 
 Flag conflicts with the performance targets while designing, not after the build misses them: autoplay video heroes, scroll-triggered animation on everything, six font weights, eager map embeds. Propose the substitution and note it in the page spec.
 
@@ -34,9 +38,19 @@ Flag conflicts with the performance targets while designing, not after the build
 | File | Location | Contents |
 |---|---|---|
 | `DESIGN-GUIDELINES.md` | `<project>/.claude-project/design/` | Character, reference table, colour tokens **with a measured contrast table**, fluid type scale, spacing rhythm, grid and breakpoints, motion, component policy, voice |
-| `pages/<page>.md` | `<project>/.claude-project/design/pages/` | Purpose and primary action, section list with canvas node ids, **Component Inventory**, responsive behaviour at 390/768/1440, content limits, interaction with non-JS fallback, SEO intent |
+| `pages/<page>.md` | `<project>/.claude-project/design/pages/` | Purpose and primary action, section list with canvas node ids, **Component Inventory**, responsive behaviour at 390/768/1440, content limits, **the motion table** (element, trigger, move, duration, curve, reduced-motion state), written against the `motion` skill's vocabulary so the build is a markup change rather than a re-invention, interaction with non-JS fallback, SEO intent |
 
 A design that exists only on a canvas is not finished. The `.md` is what the Astro agent builds from and what survives the design tool.
+
+## Before you hand it over
+
+Score the six axes in `award-bar.md` §2 and write the total in your report. Nothing below 2. Then check the three failures that hide best:
+
+- **Rhythm.** No two adjacent bands may behave the same way. Four bands of heading-plus-three-cards is a list, not a page.
+- **The peak.** Exactly one moment gets the most room, with a quieter band before it. Three competing peaks is none.
+- **The close.** It resolves and holds. An ending that trails into a footer throws away the last thing the visitor feels.
+
+If the design is already built, run the teardown against **your own build** and diff its numbers against `DESIGN-GUIDELINES.md`. Your own type ladder, spacing base and contrast pairs should not surprise you; when they do, the system drifted during the build and the guidelines are now fiction.
 
 ## Non-negotiables
 

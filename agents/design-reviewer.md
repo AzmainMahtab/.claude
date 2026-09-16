@@ -64,6 +64,26 @@ Load the `design` skill for the standard you are reviewing against.
 - Autoplay video heroes, scroll-triggered animation on everything, six font weights, eager map embeds, custom cursors, WebGL backgrounds. Each is a stated cost against the 100/100/100/100 target. **Major** if present without a noted substitution.
 - Entrance animation on the hero headline or hero image is **Major** — it directly delays the largest paint.
 
+### Motion
+
+`design/references/motion.md` is the spec; the **`motion` skill** is the implementation and the gate. Check the page spec carries a motion table with one row per move: element, trigger, what moves, duration, curve, reduced-motion state.
+
+If the design is built, run `node <motion-skill>/scripts/motion-audit.mjs <url>` and report every FAIL it returns. It is evidence rather than opinion.
+
+- Every row identical, or the table missing entirely, is a **Major**: the motion was not designed, it will be improvised in the build.
+- Curves named as adjectives ("smooth", "ease") rather than values is a **Minor**. The vocabulary should be two or three real curves for the whole site.
+- `ease-in` on anything entering, animation on the hero, scroll-jacking, or anything continuous animating a property other than `transform` / `opacity` / `clip-path` is a **Major**.
+- No reduced-motion column is a **Major**. Reduced motion is a designed state, not a fallback the build invents.
+
+### The award bar
+
+Only when the project is meant to be exceptional rather than correct. Score the six axes in `award-bar.md` §2 and report the total.
+
+- **The one-sentence test.** If nobody can complete "It's the site where ___" with an experience, report it as **Critical**: the design has no idea, and no amount of polish adds one.
+- **Rhythm.** Two adjacent bands behaving the same way is a **Major**. Four identical bands is **Critical**.
+- **The peak.** No peak, or three competing peaks, is a **Major**.
+- **The close.** An ending that fades into a footer is a **Major**.
+
 ### Craft and anti-slop
 - Everything boxed in a card without structural reason.
 - Repeated identical 3-column icon grids.
@@ -71,6 +91,15 @@ Load the `design` skill for the standard you are reviewing against.
 - More than one accent; more than two families; gradient without a brand reason.
 - Uniform density down the page with no rhythm variation.
 - Placeholder-flavoured copy.
+
+### Measured drift, if built
+
+Run `node <skill>/scripts/teardown.mjs <built-url> --out lab/` and diff it against `DESIGN-GUIDELINES.md`. This is the cheapest way to catch a system that decayed during the build, and it is evidence rather than opinion.
+
+- A type ladder in the build that is not the ladder in the guidelines: **Major**.
+- A spacing base unit that does not match: **Major**.
+- Any ink/ground pair the tool marks FAIL: **Critical**. It measures the real composited pair, so this outranks the guidelines' own table.
+- More font weights loaded than the guidelines name: **Minor**, rising to Major if it costs the performance budget.
 
 ### Drift, if built
 - Component paths match reality.

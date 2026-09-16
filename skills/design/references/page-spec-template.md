@@ -74,6 +74,19 @@ Per section, at all three widths. Stated, not implied.
 | Hero | 16/9 desktop, 4/3 mobile | Wide venue shot, warm evening light | What the room is and the scale of the event |
 | Portfolio grid | 4/3 | One detail per image, consistent grade | The specific element shown |
 
+## Motion
+
+One row per move. Full spec and curve vocabulary in `motion.md`.
+
+| Element | Trigger | Move | Duration | Curve | Reduced motion |
+|---|---|---|---|---|---|
+| Section headings | Entry, once, -12% margin | opacity 0→1, y +16px→0 | 620ms | `cubic-bezier(.23,1,.32,1)` | opacity only |
+| Grid items | Entry, stagger 60ms, max 8 | opacity 0→1, y +14px→0 | 500ms | `cubic-bezier(.23,1,.32,1)` | all visible, no stagger |
+| Primary CTA | Hover / focus | background + colour invert | 160ms | `cubic-bezier(.25,.46,.45,.94)` | unchanged |
+
+**Nothing animates the hero.**
+**Signature moment:** <one sentence: what it is, and why it is the thing they remember>.
+
 ## Interaction
 
 | Element | Behaviour | Without JavaScript |

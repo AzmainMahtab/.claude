@@ -1,0 +1,319 @@
+/* ============================================================================
+   motion.css — the zero-JS tier.
+   Drop this in, add data-m attributes to markup, ship 0 bytes of JavaScript.
+
+   Everything here degrades to "visible and static". The hidden state lives
+   inside @keyframes, never in a base rule, so an element whose animation never
+   runs is simply on screen. That is the whole safety property: no JS, no
+   scroll-timeline support, a thrown error mid-page — the content is still there.
+
+   Pair with runtime/motion.js only for what CSS genuinely cannot do
+   (pointer response, counters, line splitting, JS-authored scenes) or to
+   polyfill reveals on engines without scroll-driven animations.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- tokens -- */
+:root {
+  /* Curves. Two or three per site, never nine. The first is the house curve. */
+  --m-out:      cubic-bezier(0.23, 1, 0.32, 1);      /* expo out: arrives fast, settles long */
+  --m-out-soft: cubic-bezier(0.22, 1, 0.36, 1);      /* quint out: interchangeable, pick one */
+  --m-std:      cubic-bezier(0.4, 0, 0.2, 1);        /* neutral, for state changes */
+  --m-quad:     cubic-bezier(0.25, 0.46, 0.45, 0.94);/* gentle, for small UI */
+  --m-back:     cubic-bezier(0.34, 1.56, 0.64, 1);   /* overshoots. one element per site, never text */
+
+  /* Duration ladder. Scales with distance travelled and size of the mover. */
+  --m-t-press: 110ms;
+  --m-t-ui:    160ms;
+  --m-t-sm:    340ms;   /* a chip, an icon, a row */
+  --m-t-md:    560ms;   /* a band of content */
+  --m-t-lg:    780ms;   /* a full-screen state change */
+
+  --m-rise:    16px;    /* entrance travel. past 24px it reads as a slide */
+  --m-stagger: 60ms;    /* 30-80ms. under 30 reads simultaneous, over 80 the reader outruns it */
+}
+
+/* Scroll progress as a real animatable number, 0 to 1. Any rule can read it:
+   transform: translateY(calc(var(--m-p) * -40px)). Set by scroll-driven CSS
+   below, or written by motion.js where that is unsupported. */
+@property --m-p {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+/* ========================================================================= */
+/* TIER 0 — scroll-driven, zero JavaScript                                   */
+/* Supported in Chromium and Safari. Everywhere else the content is visible   */
+/* and static, which is a correct page, not a broken one.                     */
+/* ========================================================================= */
+
+@supports (animation-timeline: view()) {
+
+  /* Entrance. Fires as the element crosses into view and holds. `both` keeps
+     the end state after the range, so nothing re-hides on the way back up. */
+  [data-m~="reveal"] {
+    animation: m-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 8% cover 34%;
+  }
+  [data-m~="fade"] {
+    animation: m-fade linear both;
+    animation-timeline: view();
+    animation-range: entry 8% cover 30%;
+  }
+
+  /* Stagger without JS: each child gets the same animation over a range
+     offset by its index, so they arrive in sequence as the group scrolls in.
+     Set --i on the children (a loop in the template, or :nth-child below). */
+  [data-m-stagger] > * {
+    animation: m-reveal linear both;
+    animation-timeline: view();
+    animation-range:
+      entry calc(6% + (var(--i, 0) * 5%))
+      cover calc(30% + (var(--i, 0) * 5%));
+  }
+  [data-m-stagger] > *:nth-child(1)  { --i: 0; }
+  [data-m-stagger] > *:nth-child(2)  { --i: 1; }
+  [data-m-stagger] > *:nth-child(3)  { --i: 2; }
+  [data-m-stagger] > *:nth-child(4)  { --i: 3; }
+  [data-m-stagger] > *:nth-child(5)  { --i: 4; }
+  [data-m-stagger] > *:nth-child(6)  { --i: 5; }
+  [data-m-stagger] > *:nth-child(7)  { --i: 6; }
+  [data-m-stagger] > *:nth-child(8)  { --i: 7; }
+  /* Capped at 8 on purpose. Past that the tail arrives so late it reads as
+     broken, so long lists reveal as a whole or in row groups. */
+  [data-m-stagger] > *:nth-child(n+9) { --i: 8; }
+
+  /* Image wipe. A change of state, not an introduction: use it big, full-bleed
+     or near it. On a small element it is a fidget. */
+  [data-m~="clip"] {
+    animation: m-clip linear both;
+    animation-timeline: view();
+    animation-range: entry 4% cover 42%;
+  }
+
+  /* Slow push-in on a photograph. The only zoom that is not a gimmick, because
+     it is scrubbed by the hand rather than played at the reader. */
+  [data-m~="push"] > img,
+  img[data-m~="push"] {
+    animation: m-push linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+
+  /* Page progress bar, pinned to the document's own scroll. */
+  [data-m~="progress"] {
+    transform-origin: 0 50%;
+    animation: m-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  /* A scene: publishes --m-p from 0 to 1 across its own travel, so descendants
+     can drive anything from it in plain CSS. Pair with position: sticky on an
+     inner stage to hold the frame while the content advances. */
+  [data-m~="scene"] {
+    animation: m-scene linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+/* ------------------------------------------------------------- keyframes -- */
+/* The from-state lives here and nowhere else. */
+@keyframes m-reveal {
+  from { opacity: 0; transform: translate3d(0, var(--m-rise), 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes m-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes m-clip {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes m-push {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
+}
+@keyframes m-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes m-scene {
+  from { --m-p: 0; }
+  to   { --m-p: 1; }
+}
+@keyframes m-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ---------------------------------------------------------------- split -- */
+/* motion.js writes these. Each unit rises out from behind a mask, so it enters
+   from a clean edge instead of simply fading. The mask reserves room for
+   descenders: clipping to the line box shears the tails off g, y, p and j,
+   which is the most common way this effect looks broken. */
+[data-m-split] { display: block; }
+.m-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.m-unit { display: inline-block; }
+
+@supports (animation-timeline: view()) {
+  [data-m-split] .m-unit {
+    animation: m-unit linear both;
+    animation-timeline: view();
+    animation-range:
+      entry calc(6% + (var(--i, 0) * 4%))
+      cover calc(26% + (var(--i, 0) * 4%));
+  }
+}
+.m-io [data-m-split] .m-unit {
+  opacity: 0;
+  transform: translate3d(0, 0.9em, 0);
+  transition: opacity var(--m-t-md) var(--m-out), transform var(--m-t-md) var(--m-out);
+  transition-delay: calc(var(--i, 0) * var(--m-stagger));
+}
+.m-io [data-m-split].is-in .m-unit { opacity: 1; transform: none; }
+
+@keyframes m-unit {
+  from { opacity: 0; transform: translate3d(0, 0.9em, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* -------------------------------------------------------------- marquee -- */
+/* Continuous, so linear is correct here and nowhere else. The track holds the
+   content twice; translating exactly -50% makes the loop seamless. */
+/* The track's content must be written TWICE in the markup, the second copy
+   aria-hidden, so translating exactly -50% loops seamlessly with no JS. */
+[data-m~="marquee"] {
+  overflow: hidden;
+  display: flex;
+}
+[data-m~="marquee"] > * {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--m-marquee-gap, 2rem);
+  padding-right: var(--m-marquee-gap, 2rem);
+  animation: m-marquee var(--m-marquee-dur, 38s) linear infinite;
+  will-change: transform;
+}
+[data-m~="marquee"]:hover > * { animation-play-state: paused; }
+
+/* ========================================================================= */
+/* Always-on: state feedback. No scroll, no JS, no excuses.                   */
+/* ========================================================================= */
+
+[data-m-press] {
+  transition: transform var(--m-t-press) var(--m-quad);
+}
+[data-m-press]:active { transform: translateY(1px) scale(0.99); }
+
+[data-m-hover] {
+  transition:
+    background-color var(--m-t-ui) var(--m-quad),
+    color            var(--m-t-ui) var(--m-quad),
+    border-color     var(--m-t-ui) var(--m-quad),
+    opacity          var(--m-t-ui) var(--m-quad);
+}
+
+/* An underline that draws from the leading edge. Cheap, and it reads as craft. */
+[data-m~="underline"] {
+  position: relative;
+  text-decoration: none;
+}
+[data-m~="underline"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -0.15em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(var(--m-u, 0));
+  transform-origin: left center;
+  transition: transform 280ms var(--m-out);
+}
+[data-m~="underline"]:hover,
+[data-m~="underline"]:focus-visible { --m-u: 1; }
+
+/* ========================================================================= */
+/* TIER 1 fallback state — only while motion.js is present AND the engine has */
+/* no scroll-driven animations. Set by motion.js, never by hand.              */
+/* ========================================================================= */
+
+.m-io [data-m~="reveal"],
+.m-io [data-m~="fade"],
+.m-io [data-m-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, var(--m-rise), 0);
+  transition:
+    opacity   var(--m-t-md) var(--m-out),
+    transform var(--m-t-md) var(--m-out);
+  transition-delay: var(--m-delay, 0ms);
+}
+.m-io [data-m~="fade"] { transform: none; }
+.m-io [data-m~="clip"] {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--m-t-lg) var(--m-out);
+}
+.m-io [data-m].is-in,
+.m-io [data-m-stagger] > .is-in {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+
+/* ========================================================================= */
+/* Reduced motion: fewer and gentler, not zero.                              */
+/* Keep the opacity that carries comprehension. Drop every position change.   */
+/* A layout that only makes sense once something has moved is the bug.        */
+/* ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --m-rise: 0px; --m-stagger: 0ms; }
+
+  [data-m~="clip"],
+  [data-m~="push"] > img,
+  img[data-m~="push"],
+  [data-m~="scene"] {
+    animation: none !important;
+  }
+  [data-m~="push"] > img,
+  img[data-m~="push"] { transform: none !important; }
+  [data-m~="clip"] { clip-path: none !important; }
+
+  /* The marquee becomes a static strip. It is content, so it stays readable. */
+  [data-m~="marquee"] > * { animation: none !important; transform: none !important; }
+  [data-m~="marquee"] { overflow-x: auto; }
+
+  /* Reveals are switched off outright rather than shortened. Gating content on
+     scroll position is not a gentler version of the same effect, it is the same
+     gate: a reader who asked for less motion still has to scroll to find out
+     whether a paragraph exists. So everything is simply present. */
+  [data-m~="reveal"],
+  [data-m~="fade"],
+  [data-m-stagger] > *,
+  [data-m-split] .m-unit {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .m-io [data-m~="reveal"],
+  .m-io [data-m~="fade"],
+  .m-io [data-m-stagger] > *,
+  .m-io [data-m-split] .m-unit {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms !important;
+  }
+
+  *, *::before, *::after {
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
