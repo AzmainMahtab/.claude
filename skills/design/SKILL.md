@@ -9,11 +9,15 @@ Use this for any design work: a new page, a new system, a revision, or a redesig
 
 The premise: **a design is a system plus a specification, and the canvas is only where it is drawn.** A beautiful screen nobody can rebuild consistently is a liability. So every design here produces two written artefacts alongside the canvas, and neither is optional.
 
-Three companion references live next to this file:
+Five companion references live next to this file:
 
+- `references/award-bar.md` — what separates award-level work from competent work: the one-sentence test, the six axes, rhythm, the peak, and the full anti-slop list. **Read this first on any project that is meant to be exceptional rather than correct.**
+- `references/research-protocol.md` — how to read a reference website with measurements instead of impressions, using `scripts/teardown.mjs`.
 - `references/design-system.md` — the `DESIGN-GUIDELINES.md` template in full: token naming, the type scale maths, the spacing rhythm, and how to measure the contrast table.
-- `references/research-protocol.md` — how to read a reference website and extract decisions rather than vibes.
+- `references/motion.md` — the motion spec: the four jobs, the curve vocabulary, the duration ladder, stagger, scroll-linked rules, and the motion table every page spec carries.
 - `references/page-spec-template.md` — the per-page `.md` template, including the Component Inventory table.
+
+One script, `scripts/teardown.mjs`, does the forensic read of a live site. It needs `npm i playwright-core` once and a Chrome on the machine.
 
 Canvas mechanics (the `.pen` schema, `execute`, components, layout) come from the `pencil` MCP tools — call `get_app_state` and `get_guidelines` for those. This skill is about what to draw and why, not how to drive the editor.
 
@@ -28,26 +32,35 @@ Answer these in the response. If an answer is genuinely unavailable and would ch
 3. **What must be on the page?** The content inventory — real sections, real copy lengths. Designing around lorem ipsum produces layouts that break the day real copy arrives.
 4. **What is the reference set?** URLs the user admires, or an existing brand to extend. See Step 1.
 5. **Is there an existing system?** If `DESIGN-GUIDELINES.md` exists for this project, you are extending it, not starting over. Read it first and stay inside it.
+6. **What is the one sentence?** Complete: "It's the site where ___", with an experience rather than a feature. If the only available answer is "it's clean and it works", there is no idea yet and drawing will not produce one. Full method in `award-bar.md` §1. Everything on the page either serves that sentence or gets cut.
 
 ---
 
 ## Step 1 — Research the references properly
 
-When the user names reference sites, do not glance and imitate. Fetch each one and extract specific, transferable decisions. Full method: `references/research-protocol.md`.
+When the user names reference sites, do not glance and imitate, and do not guess at the mechanics. **Measure first, judge second.** Full method: `references/research-protocol.md`.
 
-Tools, in order of preference:
+**Measure it.** One command per reference:
 
-- `WebFetch` on the URL — structure, copy hierarchy, section order, the words they use.
-- The `pencil` MCP `browser` tool — opens the live site in the app and can import its design onto the canvas, which is by far the fastest way to read real spacing and colour.
-- `WebSearch` for the studio's other work when you want the pattern behind one site rather than the one site.
+```bash
+npm i playwright-core                                   # once
+node <skill>/scripts/teardown.mjs https://ref.com --out research/
+node <skill>/scripts/teardown.mjs https://ref.com --mobile
+```
 
-For each reference, record in the design doc:
+It reports what the site is actually built with, not what it looks like it is built with: framework and animation libraries, the fonts as rendered with their weights and tracking, the type ladder and its median ratio, the palette weighted by painted area with every ink/ground pair measured for contrast, the spacing base unit, container widths, the duration and easing histograms including raw `cubic-bezier` values, and the byte weight by resource type.
 
-| Reference | What was taken | Why it fits |
-|---|---|---|
-| `studio-x.com` | The full-bleed hero image with the headline offset to the lower-left third | Puts the venue photography first, which is this client's actual asset |
+It warns loudly when it has captured a bot wall or an unhydrated shell instead of the page. **Heed that warning** — a confident teardown of a Cloudflare interstitial looks exactly like evidence.
 
-"Inspired by" is not a record. Name the decision, or leave it out. And take structure, type behaviour and rhythm — never a layout wholesale. Three references blended with judgement is a design; one reference recoloured is a copy.
+**Then judge it by eye**, because the tool cannot: what the one idea is, where the eye lands first, the rhythm of the bands, what they deliberately did not do. `WebFetch` is still the fastest read of content architecture; the `pencil` `browser` tool imports a section onto the canvas when a composition is worth studying closely.
+
+**Then record decisions with their measurement:**
+
+| Reference | Measured | Decision taken | Why it fits here |
+|---|---|---|---|
+| `studio-x.com` | Display 96px against 17px body, 5.6×; one family, two weights | Hierarchy from scale alone, not colour or weight | The client's palette is two neutrals; scale is the only lever with that range |
+
+"Inspired by" is not a record. Name the decision, or leave it out. Take structure from one reference, type behaviour from another, colour and detail from the brand. Three references blended with judgement is a design; one reference recoloured is a copy.
 
 ---
 
@@ -95,9 +108,11 @@ State the rhythm explicitly: space between a heading and its body, between body 
 
 ### Motion
 
-Durations (150–250ms for UI, up to 400ms for larger transitions), easing (`ease-out` for entrances, `ease-in-out` for state changes), and what moves. Everything honours `prefers-reduced-motion`.
+Full spec: `references/motion.md` for **what** the motion is and why. The **`motion` skill** carries the implementation: a tested zero-JS runtime, copy-paste recipes and an audit script. Design it here rather than leaving it to the build.
 
-No scroll-jacking. No entrance animation on the hero headline or hero image — it delays the largest paint and is measurable in the performance score.
+The guidelines file names: the **curve vocabulary** (two or three curves for the whole site, with values, not adjectives), the **duration ladder** by move size, the stagger interval, what the reduced-motion state is, and the one signature moment.
+
+Non-negotiable regardless of taste: nothing animates the hero; no scroll-jacking; `transform` and `opacity` only for anything continuous; never `ease-in` on an entrance; reduced motion means fewer and gentler, not zero.
 
 ### Component rules
 
@@ -143,14 +158,15 @@ Canvas discipline (the `pencil` guidelines cover the rest):
 
 4. **Responsive behaviour per section at 390 / 768 / 1440** — stated, not implied.
 5. **Content requirements** — character limits for headlines and body, image aspect ratios and subjects, alt text intent.
-6. **Interaction notes** — what is interactive, and the non-JS fallback. The Astro side prefers CSS-only and real routes over islands; a design that assumes a client-side filter should say whether real category URLs would serve as well.
-7. **SEO intent** — title, meta description, the one `h1`, and the heading outline.
+6. **The motion table** — one row per move: element, trigger, what moves, duration, curve, reduced-motion state. Template in `references/motion.md` §9. If every row is identical you have applied a plugin, not choreographed a page.
+7. **Interaction notes** — what is interactive, and the non-JS fallback. The Astro side prefers CSS-only and real routes over islands; a design that assumes a client-side filter should say whether real category URLs would serve as well.
+8. **SEO intent** — title, meta description, the one `h1`, and the heading outline.
 
 ---
 
 ## Anti-slop rules
 
-The default AI design is recognisable and it is not what we ship. Specifically:
+The default AI design is recognisable and it is not what we ship. The full list, by category, is in `award-bar.md` §6. The ones that matter most:
 
 - **Not everything is a card.** A container needs a structural or functional reason. A list of three things is a list; giving each a bordered, shadowed, rounded box is a reflex, not a decision.
 - **Not four identical 3-column icon grids** stacked down the page. Vary the rhythm: a wide editorial split, then a full-bleed image, then a tight grid, then a quiet band of text.
@@ -174,5 +190,14 @@ Before handing a design to code:
 - [ ] Repeated elements are real `.pen` components with instances, not copies.
 - [ ] Exactly one `h1`-level headline; the heading outline descends without gaps.
 - [ ] Interactive elements have a stated non-JS fallback.
-- [ ] Reference research is recorded as specific decisions with reasons.
+- [ ] Reference research is recorded as specific decisions **with the measurement next to each one**.
+- [ ] The motion table is filled in, with real curve values and a reduced-motion column.
 - [ ] Anti-slop pass: no unjustified cards, no repeated identical grids, no centred-everything, one accent.
+
+And, for anything meant to be better than correct (`award-bar.md` §8):
+
+- [ ] The one-sentence test has an answer, and it is about an experience.
+- [ ] Six axes scored, nothing below 2.
+- [ ] No two adjacent bands behave the same way.
+- [ ] Exactly one peak, with the most room and a quieter band before it. The close resolves and holds.
+- [ ] **Teardown run against your own build.** The type ladder, spacing base and contrast pairs it reports should match `DESIGN-GUIDELINES.md`. If your own numbers surprise you, the system drifted during the build.

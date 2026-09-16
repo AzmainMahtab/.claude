@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>motion runtime · every recipe</title>
+<link rel="stylesheet" href="../runtime/motion.css">
+<style>
+  :root { --ink:#0d0d0c; --paper:#f7f6f3; --soft:#56544f; --rule:#dad7d0; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font:400 17px/1.7 system-ui, -apple-system, sans-serif; }
+  .wrap { width:min(1080px, 100% - 10vw); margin-inline:auto; }
+  section { padding-block: 16vh; border-top:1px solid var(--rule); }
+  section:first-of-type { border-top:0; }
+  h1 { font-size:clamp(2.6rem,7vw,5.5rem); line-height:.95; letter-spacing:-.03em; margin:0 0 1.5rem; }
+  h2 { font-size:clamp(1.6rem,3.4vw,2.6rem); line-height:1.05; letter-spacing:-.02em; margin:0 0 .4rem; }
+  .lab { font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--soft); margin:0 0 2rem; }
+  p { max-width:60ch; color:var(--soft); margin:0 0 1rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin-top:2rem; }
+  .cell { border-top:1px solid var(--rule); padding-top:1rem; }
+  .cell b { display:block; font-size:2rem; letter-spacing:-.02em; }
+  .plate { background:#e6e3dc; aspect-ratio:16/9; overflow:hidden; }
+  .plate img { width:100%; height:100%; object-fit:cover; display:block; }
+  .bar { position:fixed; inset:0 0 auto 0; height:3px; background:var(--ink); z-index:9; }
+  .btn { display:inline-block; padding:.8rem 1.4rem; background:var(--ink); color:var(--paper);
+         text-decoration:none; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; border:0; }
+  .stage { position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; }
+  .scene { height:260vh; }
+  .mover { font-size:clamp(3rem,10vw,8rem); font-weight:700; letter-spacing:-.04em;
+           transform: translate3d(calc(var(--m-p) * -36vw), 0, 0); }
+  .dial { width:220px; height:220px; border:1px solid var(--rule); border-radius:50%;
+          display:grid; place-items:center; transform: rotate(calc(var(--m-p) * 360deg)); }
+  .dial span { width:3px; height:90px; background:var(--ink); transform:translateY(-45px); }
+  .marq { border-block:1px solid var(--rule); padding-block:1.2rem; font-size:clamp(1.4rem,3vw,2.4rem);
+          letter-spacing:-.02em; --m-marquee-gap:3rem; }
+  .layers { position:relative; height:60vh; overflow:hidden; background:#e6e3dc; }
+  .layers div { position:absolute; inset:0; display:grid; place-items:center; font-size:5rem; font-weight:700; }
+  .far  { color:#c9c5bc; } .mid { color:#9f9b92; } .near { color:var(--ink); }
+  .spotbox { position:relative; height:280px; background:var(--ink); color:var(--paper);
+             display:grid; place-items:center; overflow:hidden; }
+  .spotbox::after { content:""; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(240px at calc(var(--m-mx,.5)*100%) calc(var(--m-my,.5)*100%),
+                rgba(255,255,255,.16), transparent 70%); }
+  a { color:inherit; }
+</style>
+</head>
+<body>
+
+<div class="bar" data-m="progress" aria-hidden="true"></div>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 0 · split lines</p>
+    <h1 data-m-split="lines">Motion that earns its place, and nothing that does not.</h1>
+    <p data-m="reveal">Every recipe on this page is exercised by the test in <code>scripts/</code>. If a
+      recipe is not on this page, it is not in the runtime.</p>
+    <p><a class="btn" href="#" data-m-press data-m-hover>Press me</a>
+       &nbsp; <a href="#" data-m="underline">or hover this</a></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 0 · reveal and stagger</p>
+    <h2 data-m="reveal">Arrives in reading order</h2>
+    <p data-m="reveal">The group below staggers by index, capped at eight, so the tail never arrives late
+      enough to read as broken.</p>
+    <div class="grid" data-m-stagger="60">
+      <div class="cell"><b>01</b>Staff and shifts</div>
+      <div class="cell"><b>02</b>Clients and goals</div>
+      <div class="cell"><b>03</b>Inventory</div>
+      <div class="cell"><b>04</b>Events</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 1 · counters</p>
+    <h2 data-m="reveal">Real numbers only</h2>
+    <div class="grid">
+      <div class="cell"><b data-m="count" data-m-count="9">0</b>roles</div>
+      <div class="cell"><b data-m="count" data-m-count="6">0</b>modules</div>
+      <div class="cell"><b data-m="count" data-m-count="1,240">0</b>members</div>
+      <div class="cell"><b data-m="count" data-m-count="4.8">0</b>rating</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 0 · clip wipe and push</p>
+    <div class="plate" data-m="clip push">
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90'><rect width='160' height='90' fill='%23444'/><circle cx='80' cy='45' r='26' fill='%23bbb'/></svg>" alt="Placeholder plate">
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-m="scene">
+  <div class="stage">
+    <div class="wrap">
+      <p class="lab">Tier 0 · scene publishing --m-p</p>
+      <div class="mover">SCRUBBED&nbsp;BY&nbsp;THE&nbsp;HAND</div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-m="scene">
+  <div class="stage">
+    <div class="dial"><span></span></div>
+  </div>
+</section>
+
+<section style="padding-block:0;border:0">
+  <div class="marq" data-m="marquee">
+    <div>
+      <span>ZERO JAVASCRIPT</span><span>/</span><span>SCROLL DRIVEN</span><span>/</span><span>REDUCED MOTION HONOURED</span><span>/</span>
+    </div>
+    <div aria-hidden="true">
+      <span>ZERO JAVASCRIPT</span><span>/</span><span>SCROLL DRIVEN</span><span>/</span><span>REDUCED MOTION HONOURED</span><span>/</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 1 · parallax planes</p>
+    <div class="layers">
+      <div class="far"  data-m="parallax" data-m-rate="1.4">FAR</div>
+      <div class="mid"  data-m="parallax" data-m-rate="0.9">MID</div>
+      <div class="near" data-m="parallax" data-m-rate="0.4">NEAR</div>
+    </div>
+    <p style="margin-top:1rem">Adjacent planes differ by 10 to 30 percent. More stops reading as distance.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 1 · pointer</p>
+    <div class="grid">
+      <div class="cell" data-m="tilt" data-m-deg="7"><b>Tilt</b>rotates toward the pointer</div>
+      <div class="cell"><a class="btn" href="#" data-m="magnet" data-m-strength="0.3">Magnet</a></div>
+    </div>
+    <div class="spotbox" data-m="spot" style="margin-top:2rem"><span>Pointer light, --m-mx / --m-my</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="lab">Tier 1 · split words</p>
+    <h2 data-m-split="words">Words arrive one after another, lines are usually the better unit.</h2>
+    <p style="margin-top:3rem">End of the fixture.</p>
+  </div>
+</section>
+
+<script src="../runtime/motion.js" defer></script>
+</body>
+</html>

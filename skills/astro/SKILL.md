@@ -183,6 +183,22 @@ A page file is imports, data, and composition. If a page has more than a few lin
 
 ---
 
+## Step 5.5 — Motion, before you reach for an island
+
+Most of what people build an island for is motion, and almost none of it needs one. Load the **`motion` skill**: its `runtime/motion.css` does scroll reveals, staggers, wipes, scrubbed scenes, marquees and progress bars with **0 bytes of JavaScript**, via `animation-timeline: view()`, degrading to visible-and-static everywhere else.
+
+```html
+<link rel="stylesheet" href="/motion.css">
+<h2 data-m="reveal">…</h2>
+<div data-m-stagger="60">…</div>
+```
+
+Add its ~4KB `runtime/motion.js` only for counters, line splitting, pointer response or parallax. A scroll-reveal library is never the right answer on this stack.
+
+Before the page is done: `node <motion-skill>/scripts/motion-audit.mjs <url>` and again `--mobile`. It exits non-zero on a hero that animates at load, any layout-property animation, a missing `prefers-reduced-motion` block, content stuck at opacity 0, or a scroll that misses the frame budget.
+
+---
+
 ## Step 6 — Islands, last and grudgingly
 
 Only now, once the page renders and works without JavaScript, add interactivity.

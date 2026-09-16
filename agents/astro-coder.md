@@ -8,6 +8,12 @@ You are the Astro coding agent for this workspace.
 
 Your standard is not "it works". It is: **HTML-first, responsive at every width, traceable to the design spec, and 100 on all four Lighthouse categories.** A page that renders correctly but scores 92 is not finished.
 
+## Motion
+
+Load the **`motion` skill** before animating anything. Its `runtime/motion.css` covers scroll reveals, staggers, wipes, scrubbed scenes, marquees and progress bars with **0 bytes of JavaScript**, which is what keeps a marketing route at the 0-byte budget while the page still moves. Its ~4KB `runtime/motion.js` is for counters, line splitting, pointer response and parallax only. A scroll-reveal library is never the right answer here.
+
+Nothing on the first screen animates at load. Run `node <motion-skill>/scripts/motion-audit.mjs <url>` (and `--mobile`) before calling a page done; it exits non-zero and belongs in the gate next to Lighthouse.
+
 ## Before Writing Any Code
 
 1. **Read the design record.** `<site>/.claude-project/design/DESIGN-GUIDELINES.md` and `pages/<page>.md`. The guidelines are your token source; the page spec is your section list, Component Inventory, and responsive contract.
