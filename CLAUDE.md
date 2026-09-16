@@ -9,6 +9,7 @@ repo/
 ├── go-kit/                 # Go modular monolith starter kit (Hexagonal + DDD + CQRS)
 ├── nest-kit/               # NestJS modular monolith starter kit (Hexagonal + DDD + CQRS)
 ├── <name>-web/             # Astro sites — marketing/content. Design records in .claude-project/design/
+├── <project>/              # Client products — records in .project-doc/, scaffolded by /product-new
 └── graphify-out/           # Knowledge graph — check this first on any task
 ```
 
@@ -44,6 +45,12 @@ Only after running the graph should you read files or write code.
 Key god nodes (most connected): `User`, `LoginUseCase`, `RegisterUserUseCase`, `IEventBus`, `InMemoryUserRepository`, `UserStatus`.
 
 The graph does **not** cover `nest-kit/` — see `NEST-KIT.md` for what to read instead.
+
+---
+
+## Product Discovery & Delivery Planning (every new project)
+
+@PRODUCT.md
 
 ---
 
@@ -87,6 +94,12 @@ The graph does **not** cover `nest-kit/` — see `NEST-KIT.md` for what to read 
 
 | Task | Agent |
 |------|-------|
+| New client, new product, meeting minutes → PRD, estimate, quote | `/product-manager` |
+| Reading raw client material into a structured context | `/requirements-analyst` |
+| Writing or revising a PRD | `/prd-writer` |
+| Estimating delivery time for AI-native work | `/delivery-estimator` |
+| Producing a client quotation | `/quote-builder` |
+| Build documentation an AI engineer starts from | `/engineering-handoff` |
 | Architectural decisions, new module design, event bus wiring | `/architect` |
 | Any FastAPI feature, use case, endpoint, migration | `/fastapi-coder` |
 | Any Go / go-kit context, use case, endpoint, adapter, migration | `/go-coder` |
