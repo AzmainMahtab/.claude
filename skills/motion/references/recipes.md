@@ -4,6 +4,8 @@ Copy-paste patterns for the moves that hold attention. Each one says what job it
 
 **Coverage.** Recipes marked ✅ are on `demo/index.html` and asserted by `scripts/test-runtime.mjs`. Those marked ○ are standard patterns written from the same rules but not in the fixture — verify them in your own build with `scripts/motion-audit.mjs` before shipping.
 
+**This file is tiers 0 and 1** — everything here costs 0 bytes or 4KB. The set-pieces a page gets *built around* are tier 2 and live in `showpieces.md`: the assembling headline, the pinned sequence, the horizontal rail, the card stack, FLIP layout transitions, the scrubbed frame sequence. Read `gsap.md` first for what that tier costs, because it is 45KB before you have animated anything.
+
 ---
 
 ## Entrances
@@ -266,3 +268,5 @@ What counts:
 What does not count: a kit device with a different parameter. A recoloured spotlight, `tilt="9"` instead of `6`, a third scrubbed scene, the rail scrolling the other way. **Describe it to someone who has seen the other builds. If they cannot tell it apart from something the kit already does, it is not a signature move.**
 
 One per page. Three delightful moments is zero, because none of them is the moment.
+
+`showpieces.md` closes with the signature moves that are worth the tier 2 bytes when one of them genuinely is the idea — the scrubbed frame sequence, the morph, the velocity marquee, the overlay that hands off to the hero, and the band that inverts what passes behind it.

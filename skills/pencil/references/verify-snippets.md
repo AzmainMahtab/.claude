@@ -185,11 +185,13 @@ Read it against `DESIGN-GUIDELINES.md` §6. Radii of `{2, pill}` is a policy. `{
 
 ```js
 Get("document",(n,c)=>{
-  if(c.depth!==1) return
+  if(c.depth!==0) return                 /* top-level nodes are depth 0, not 1 */
   c.skipChildren()
   if(!["frame","group"].includes(n.type)) Print("   loose at root:",n.id,n.name,n.type)
 })
 ```
+
+**`Get("document", visit)` starts top-level nodes at depth 0.** Written against `depth === 1` this snippet silently inspects the *children* of every root node instead, which on a document with a component library means it reports every component's label and icon as "loose at root". Verified on a live document: 10 root frames at depth 0, their children at depth 1.
 
 Only screen frames, reusable components and major containers belong at the root. A loose text node or rectangle there is a leftover and will confuse the next person reading the document.
 

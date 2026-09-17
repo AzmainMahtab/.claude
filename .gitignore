@@ -1,0 +1,3 @@
+# no trailing slash: one of these is a symlink into another project, and
+# `node_modules/` matches directories only
+node_modules

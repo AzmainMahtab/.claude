@@ -1,0 +1,13 @@
+{
+  "name": "@skill/motion",
+  "private": true,
+  "description": "Test and audit harness for the motion skill. Not shipped with a site.",
+  "scripts": {
+    "test": "node scripts/test-runtime.mjs && node scripts/test-gsap.mjs",
+    "test:gsap": "node scripts/test-gsap.mjs",
+    "audit": "node scripts/motion-audit.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

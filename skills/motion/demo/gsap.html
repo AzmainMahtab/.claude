@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>motion · tier 2 · GSAP set-pieces</title>
+<style>
+  :root {
+    --ink:#0d0d0c; --paper:#f7f6f3; --soft:#56544f; --rule:#dad7d0; --accent:#c8442a;
+    --deep:#12121a; --deep-ink:#f2f0ec;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font:400 17px/1.7 system-ui,-apple-system,sans-serif; overflow-x:hidden; }
+  .wrap { width:min(1080px, 100% - 10vw); margin-inline:auto; }
+  section { padding-block:16vh; border-top:1px solid var(--rule); }
+  section:first-of-type { border-top:0; }
+  h1 { font-size:clamp(2.6rem,8vw,6rem); line-height:.94; letter-spacing:-.035em; margin:0 0 1.5rem; }
+  h2 { font-size:clamp(1.7rem,3.6vw,2.8rem); line-height:1.04; letter-spacing:-.02em; margin:0 0 .4rem; }
+  h3 { font-size:1.15rem; margin:0 0 .4rem; letter-spacing:-.01em; }
+  .lab { font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--soft); margin:0 0 2rem; }
+  p { max-width:62ch; color:var(--soft); margin:0 0 1rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; margin-top:2rem; }
+  .cell { border-top:1px solid var(--rule); padding-top:1rem; }
+  .cell b { display:block; font-size:2.2rem; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .btn { display:inline-block; padding:.9rem 1.5rem; background:var(--ink); color:var(--paper);
+         text-decoration:none; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; border:0; cursor:pointer; }
+
+  /* pin */
+  .pinned { background:var(--deep); color:var(--deep-ink); border-top:0; padding:0; }
+  .pinned .stage { height:100vh; display:grid; place-items:center; position:relative; overflow:hidden; }
+  .pinned .step { position:absolute; text-align:center; max-width:34ch; }
+  .pinned .step h2 { color:var(--deep-ink); }
+  .pinned .step p { color:#a6a29a; margin-inline:auto; }
+
+  /* rail */
+  .rail { overflow:hidden; padding-block:0; border-top:0; background:#eceae4; }
+  .rail .head { padding:8vh 0 3vh; }
+  .rail .track { display:flex; gap:2rem; padding:0 5vw 10vh; width:max-content; }
+  .rail .card { width:min(360px,70vw); background:var(--paper); padding:1.6rem; border:1px solid var(--rule); }
+  .rail .card .n { font-size:.7rem; letter-spacing:.2em; color:var(--accent); }
+
+  /* stack */
+  .stack .card { background:var(--paper); border:1px solid var(--rule); padding:2.4rem;
+                 min-height:52vh; display:flex; flex-direction:column; justify-content:flex-end;
+                 transform-origin:50% 0; }
+  .stack .card + .card { margin-top:3vh; }
+
+  /* mask */
+  .maskbox { position:relative; aspect-ratio:16/8; overflow:hidden; background:#e6e3dc; }
+  .maskbox .layer { position:absolute; inset:0; display:grid; place-items:center;
+                    font-size:clamp(2rem,6vw,4.5rem); font-weight:700; letter-spacing:-.03em; }
+  .maskbox .under { background:#e6e3dc; color:var(--ink); }
+  .maskbox .over  { background:var(--ink); color:var(--paper); }
+
+  /* scrub */
+  .scene { height:220vh; position:relative; }
+  .scene .sticky { position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; }
+  .mover { font-size:clamp(3rem,11vw,9rem); font-weight:700; letter-spacing:-.045em; }
+
+  /* flip */
+  .flipgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:1rem; margin-top:1.5rem; }
+  .flipgrid .tile { aspect-ratio:1; background:var(--ink); color:var(--paper); display:grid; place-items:center;
+                    font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; }
+  .flipgrid .tile[data-cat="b"] { background:var(--accent); }
+  .filters { display:flex; gap:.6rem; margin-top:1.5rem; }
+  .filters button { border:1px solid var(--rule); background:none; padding:.5rem 1rem; cursor:pointer;
+                    font:inherit; font-size:.78rem; }
+  .filters button[aria-pressed="true"] { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+  svg .ln { fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+
+<section class="wrap">
+  <p class="lab">tier 2 · gsap</p>
+  <h1>Set-pieces that CSS cannot express, and nothing that it can.</h1>
+  <p data-g="reveal">Every device on this page is in the motion table of some real build. If a page
+    needs none of them, it does not need this file, and 45KB stays unspent.</p>
+  <p><a class="btn" href="#" data-g="magnet" data-g-strength="0.34">A CTA with inertia</a></p>
+</section>
+
+<section class="wrap" id="s-chop">
+  <p class="lab">chop</p>
+  <h2 data-g="chop" data-g-chop="lines">Each line rises from behind its own edge, and the block assembles as one gesture.</h2>
+  <p>SplitText when it is registered, a measuring word splitter when it is not. Lines by default:
+    splitting per character turns reading into waiting. Note the headline above does
+    <em>not</em> chop — it is on the first screen, so the runtime paints it and skips the tween.</p>
+</section>
+
+<section class="wrap" id="s-reveal">
+  <p class="lab">reveal · stagger · counter</p>
+  <h2>Batched, so a grid costs one trigger</h2>
+  <p>ScrollTrigger.batch reveals the whole group from a single trigger instead of one per card.
+    The figures are read from their own rendered text, so the DOM is right before any script runs.</p>
+  <div class="grid" data-g-stagger="60">
+    <div class="cell"><b data-g="counter">3,000</b>events a day</div>
+    <div class="cell"><b data-g="counter">45</b>KB gzipped</div>
+    <div class="cell"><b data-g="counter">12</b>devices</div>
+    <div class="cell"><b data-g="counter">1</b>signature move</div>
+  </div>
+</section>
+
+<section class="scene" id="s-scrub" data-g="scrub" data-g-catch="1">
+  <div class="sticky">
+    <div class="mover" data-g-scrub-item data-g-from-x="-320" data-g-to-x="320">SCRUBBED</div>
+  </div>
+</section>
+
+<section class="pinned" id="s-pin" data-g="pin" data-g-hold="90">
+  <div class="stage" data-g-stage>
+    <div class="step" data-g-step><h2>The frame holds</h2><p>Pinning is fine. Overriding the scroll rate is not.</p></div>
+    <div class="step" data-g-step><h2>The content advances</h2><p>The wheel keeps doing its normal job the whole way.</p></div>
+    <div class="step" data-g-step><h2>Then it releases</h2><p>anticipatePin removes the one-frame jump at the handoff.</p></div>
+  </div>
+</section>
+
+<section class="rail" id="s-rail" data-g="rail">
+  <div class="wrap head"><p class="lab">rail</p><h2>Lateral travel reads as range</h2></div>
+  <div class="track" data-g-track>
+    <article class="card"><p class="n">01</p><h3>Measured, not hardcoded</h3><p>Distance comes from real widths on every refresh.</p></article>
+    <article class="card"><p class="n">02</p><h3>Pinned, not jacked</h3><p>The scroll rate is untouched.</p></article>
+    <article class="card"><p class="n">03</p><h3>Degrades honestly</h3><p>Reduced motion turns it into a real overflow-x container.</p></article>
+    <article class="card"><p class="n">04</p><h3>Never the main thread</h3><p>A gallery or a process. Not the page's argument.</p></article>
+    <article class="card"><p class="n">05</p><h3>Keyboard intact</h3><p>Every card is still in the tab order and still reachable.</p></article>
+  </div>
+</section>
+
+<section class="wrap stack" id="s-stack" data-g="stack" data-g-top="72">
+  <p class="lab">stack</p>
+  <article class="card" data-g-card><h2>Cards that pile</h2><p>Each one sticks while the next covers it.</p></article>
+  <article class="card" data-g-card><h2>Scale back, dim</h2><p>The card below reads as further away, not as gone.</p></article>
+  <article class="card" data-g-card><h2>One trigger each</h2><p>And a plain stacked list when motion is reduced.</p></article>
+</section>
+
+<section class="wrap" id="s-draw">
+  <p class="lab">draw</p>
+  <h2>An SVG that draws itself</h2>
+  <svg viewBox="0 0 600 160" width="600" height="160" style="max-width:100%" data-g="draw" aria-hidden="true">
+    <path class="ln" d="M10 130 C 120 130, 140 20, 240 20 S 380 140, 480 60 L 590 60"/>
+    <path class="ln" d="M10 150 L 590 150"/>
+  </svg>
+  <p>DrawSVGPlugin when it is registered, <code>getTotalLength()</code> and the dasharray when it is not.
+    Same effect, zero extra bytes.</p>
+</section>
+
+<section class="wrap" id="s-mask">
+  <p class="lab">mask</p>
+  <h2>A reveal the pointer carries</h2>
+  <div class="maskbox" data-g="mask" data-g-radius="150">
+    <div class="layer under">BEFORE</div>
+    <div class="layer over" data-g-mask-layer>AFTER</div>
+  </div>
+</section>
+
+<section class="wrap" id="s-flip">
+  <p class="lab">flip</p>
+  <h2>Layout change as a movement</h2>
+  <p>The only device here with no CSS equivalent at all. Filtering normally teleports every
+    surviving tile to a new slot.</p>
+  <div class="filters">
+    <button data-filter="all" aria-pressed="true">All</button>
+    <button data-filter="a" aria-pressed="false">Group A</button>
+    <button data-filter="b" aria-pressed="false">Group B</button>
+  </div>
+  <div class="flipgrid" id="flipgrid">
+    <div class="tile" data-cat="a">A1</div><div class="tile" data-cat="b">B1</div>
+    <div class="tile" data-cat="a">A2</div><div class="tile" data-cat="b">B2</div>
+    <div class="tile" data-cat="a">A3</div><div class="tile" data-cat="b">B3</div>
+    <div class="tile" data-cat="a">A4</div><div class="tile" data-cat="b">B4</div>
+  </div>
+</section>
+
+<section class="wrap" id="s-skew" data-g="skew">
+  <p class="lab">skew</p>
+  <h2>The page leans into its own velocity</h2>
+  <p>Six degrees at full tilt. Fifteen reads as a broken page, and it always returns to zero at rest.</p>
+  <div class="grid">
+    <div class="cell"><b>-6°</b>full flick up</div>
+    <div class="cell"><b>0°</b>at rest</div>
+    <div class="cell"><b>+6°</b>full flick down</div>
+  </div>
+</section>
+
+<section class="wrap"><p class="lab">end</p><p>Every device above degrades to a correct, readable, static page.</p></section>
+
+<script src="./vendor/gsap.min.js"></script>
+<script src="./vendor/ScrollTrigger.min.js"></script>
+<script src="./vendor/SplitText.min.js"></script>
+<script src="./vendor/Flip.min.js"></script>
+<script src="../runtime/motion-gsap.js"></script>
+<script>
+  MotionGSAP.init({
+    gsap: window.gsap,
+    plugins: {
+      ScrollTrigger: window.ScrollTrigger,
+      SplitText: window.SplitText,
+      Flip: window.Flip,
+    },
+  });
+
+  /* The Flip device is exposed as a method because the DOM change is yours. */
+  var grid = document.getElementById('flipgrid');
+  document.querySelectorAll('.filters button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filters button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      var f = btn.dataset.filter;
+      MotionGSAP.flip(grid.children, function () {
+        Array.prototype.forEach.call(grid.children, function (t) {
+          t.style.display = (f === 'all' || t.dataset.cat === f) ? '' : 'none';
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>

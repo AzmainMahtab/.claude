@@ -10,7 +10,7 @@ Stack, architecture, and non-negotiables for every Astro site in this workspace.
 | Images | `astro:assets` (`<Image>` / `<Picture>`) — AVIF + WebP, never a raw `<img src>` for local art |
 | Fonts | Self-hosted `@fontsource-variable/*`, `font-display: swap`, preloaded woff2 |
 | Islands | Vanilla `<script>` first; a UI framework only when state genuinely demands it |
-| Motion | The `motion` skill. `runtime/motion.css` animates reveals, staggers, wipes, scrubbed scenes and marquees with **0 bytes of JS**; its ~4KB runtime is for counters, text splitting, pointer response and parallax only |
+| Motion | The `motion` skill, three tiers. `runtime/motion.css` animates reveals, staggers, wipes, scrubbed scenes and marquees with **0 bytes of JS**; its ~4KB runtime is for counters, text splitting, pointer response and parallax only; `runtime/motion-gsap.js` is the GSAP tier for set-pieces, at **45KB gzipped** for core + ScrollTrigger, loaded as a below-the-fold island and never without agreeing the cost |
 | Forms | Astro Actions, or a form service — no Node server just to accept a POST |
 | SEO | `@astrojs/sitemap`, `@astrojs/rss`, JSON-LD, per-page canonical + OG |
 | Deploy | Static bundle on a CDN (Cloudflare Pages / Netlify) |
@@ -50,3 +50,5 @@ Use `/astro` (skill) for the build recipe, `/astro-coder` (agent) to implement, 
 Before finishing Astro work, run `pnpm check`. It is not optional and it includes the Lighthouse run.
 
 Run the motion audit beside it: `node <motion-skill>/scripts/motion-audit.mjs <url>` and again with `--mobile`. It exits non-zero on a hero that animates at load, any layout-property animation or `transition: all`, a missing `prefers-reduced-motion` block, content left stuck at opacity 0, or a scroll that misses the frame budget. Lighthouse catches none of those.
+
+If a route uses GSAP, the same audit reports its measured gzipped weight and plugin list, and fails on untriggered tweens playing at load, pin-spacer leaks, and any pin that survives `prefers-reduced-motion`. `getAnimations()` cannot see a GSAP tween, so nothing else will catch these. **GSAP is the one island a marketing route may carry**, it is `client:visible` and below the fold, and the byte cost goes in the PR description.
