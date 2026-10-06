@@ -4,6 +4,16 @@ The target is all four Lighthouse categories at 100 on **mobile**, which is what
 
 This is a checklist, not advice. Work it top down. Each item names the audit it satisfies.
 
+> **One route type is exempt from §1 and only §1.** A scroll-scrub page — pre-rendered video
+> scrubbed by scroll position, built with the `scroll` skill — carries megabytes of H.264 by
+> design and cannot reach Performance 100. Accessibility, Best Practices and SEO below still
+> apply in full and are still asserted at 100. Performance is replaced by a hard payload
+> budget and `scroll-audit.mjs`, which fails on things Lighthouse cannot see: a phone served
+> a desktop master, video fetched under reduced motion, focus in invisible copy, a 404
+> `og:image`, decoded clips held past the ceiling. The rule lives in `.claude/ASTRO.md`; the
+> numbers and the reasoning live in `.claude/skills/scroll/references/budget.md`. Nothing
+> else on any other route is exempt from anything.
+
 ---
 
 ## 1. Performance

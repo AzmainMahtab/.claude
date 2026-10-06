@@ -1,0 +1,16 @@
+{
+  "name": "@skill/scroll",
+  "private": true,
+  "description": "Test and audit harness for the scroll skill. Not shipped with a site.",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/test-engine.mjs && node scripts/test-placeholder.mjs",
+    "audit": "node scripts/scroll-audit.mjs",
+    "budget": "node scripts/budget.mjs",
+    "seams": "node scripts/seam-check.mjs",
+    "placeholder": "node scripts/placeholder.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

@@ -94,6 +94,8 @@ The graph does **not** cover `nest-kit/` — see `NEST-KIT.md` for what to read 
 | Any frontend component, route, form, query | `/react-coder` |
 | Any Astro page, section, island, content collection, or SEO/perf work | `/astro-coder` |
 | Lighthouse score below 100, or a perf/a11y/SEO audit of an Astro page | `/astro-auditor` |
+| Any scroll-scrubbed cinematic page — "fly through the world", diorama scroll, scroll-driven camera | `/scroll-coder` |
+| Audit of a scroll-scrub page — payload, seams, mobile tiers, jank | `/scroll-auditor` |
 | Any visual design — page, system, redesign, reference research | `/designer` |
 | Design review before handing a design to code | `/design-reviewer` |
 | PR review before merging | `/code-reviewer` |
@@ -136,5 +138,6 @@ harnesses find it too.
 - Run the stack's quality gate before finishing — each stack file names its own
 - **Always**: graphify first → read files second → write code third
 - **Astro sites**: never build a page without `DESIGN-GUIDELINES.md` and its page spec — run `/design-new` first
+- **Scroll-scrub pages**: run `/scroll-page`. It spends real money per clip — the payload estimate and the dollar estimate are both approved by the user before anything renders
 - **Every design** produces `DESIGN-GUIDELINES.md` + a per-page spec with a component inventory and 390/768/1440 behaviour
 - Update the project's `.claude-project/` or `.project-doc/` records as work lands

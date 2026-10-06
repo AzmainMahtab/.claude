@@ -38,6 +38,17 @@ Dependency rule: `pages/ → sections/ → primitives/`. A section never imports
 - **Zero JS is the default.** No `client:*` directive without a comment-free justification in the PR description. `client:load` is banned above the fold unless the element is non-functional without it.
 - **Every image has explicit dimensions and a `sizes`.** Layout shift is a bug, not a polish item.
 - **Every page scores 100/100/100/100** on Lighthouse mobile — Performance, Accessibility, Best Practices, SEO. The gate enforces it; a page that cannot hit it does not merge.
+- **One exemption, and only one: scroll-scrub routes.** A page whose hero is pre-rendered video scrubbed by scroll position (the `scroll` skill) carries megabytes of H.264 by design and cannot reach Performance 100 — the dense GOP that makes the scrub feel attached to the finger is the same thing that doubles the bitrate. Such a route is exempt from the **Performance** assertion and from nothing else: Accessibility, Best Practices and SEO are still asserted at 100. In its place the route must pass a hard payload budget and the scroll audit:
+
+  ```bash
+  node .claude/skills/scroll/scripts/budget.mjs <shipped-dir>
+  node .claude/skills/scroll/scripts/scroll-audit.mjs <url>
+  node .claude/skills/scroll/scripts/scroll-audit.mjs <url> --mobile
+  ```
+
+  Ceilings are per scene — 6 MB desktop, 2 MB phone, 40 MB and 12 MB hard caps — plus a first-motion cost of 5 MB desktop / 2.5 MB phone. The audit additionally fails on a phone served a desktop master, video fetched under `prefers-reduced-motion`, focus landing on invisible copy, a missing or 404 `og:image`, and more than four decoded clips held at once. Lighthouse can see none of these. Full rationale and the AV1 trade: `.claude/skills/scroll/references/budget.md`.
+
+  This exemption is not a licence to ship a heavy page. It is a swap of one gate for a stricter, more specific one, and a route that fails the scroll audit does not merge either.
 - **Tailwind utilities in the markup, tokens in `@theme`.** No `@apply` outside `primitives/`, no arbitrary values (`text-[13px]`) where a token exists, no inline `style=` for anything themeable.
 - **Reusable or single-use is a decision, not an accident.** A pattern used twice becomes a component the second time, with typed `Props`.
 - **Mobile-first.** Base styles are the 390px design; `sm:`/`md:`/`lg:` add, never subtract.

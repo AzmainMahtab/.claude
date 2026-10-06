@@ -35,7 +35,8 @@
       "Bash(fc-list :lang=bn)",
       "Bash(graphify query *)",
       "Bash(pdftotext -layout \"ELITE4PRINT_KIT_COMPARISON.pdf\" -)",
-      "WebFetch(domain:definedsolution.com)"
+      "WebFetch(domain:definedsolution.com)",
+      "Bash(go get *)"
     ]
   }
 }
