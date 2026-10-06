@@ -1,4 +1,9 @@
-Stack, architecture, and non-negotiables for `nest-kit/`. Imported by `CLAUDE.md`.
+---
+paths:
+  - "**/nest-kit/**"
+---
+
+Stack, architecture, and non-negotiables for `nest-kit/`. Loaded automatically when working on matching paths.
 
 | Concern | Tool |
 |---------|------|

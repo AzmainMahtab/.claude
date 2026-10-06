@@ -2,6 +2,7 @@
 name: nest-code-reviewer
 description: Code review agent for nest-kit. Use before merging any PR or after completing a bounded context, use case, or endpoint. Checks layer boundaries, port placement, the single error model, the uuid/BIGSERIAL split, transaction and outbox correctness, HTTP contract, migrations, and test shape. Reports findings as a prioritized list — Critical, Major, Minor.
 model: opus
+disallowedTools: Write, Edit, NotebookEdit
 ---
 
 You are the code review agent for `nest-kit`.

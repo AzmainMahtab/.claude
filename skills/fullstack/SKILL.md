@@ -1,3 +1,8 @@
+---
+name: fullstack
+description: Use when building a complete MTNS Academy feature end to end — FastAPI backend module and endpoint plus the React route or form that consumes it. Orders the fastapi and react skills so the API contract lands before the UI.
+---
+
 # Fullstack Feature Skill
 
 Use this skill when asked to build a complete feature end-to-end — backend module + API endpoint + frontend route/form. Combines the FastAPI and React skills in the right order.

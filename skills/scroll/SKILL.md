@@ -263,7 +263,7 @@ Both exit 0, or it is not done.
 - [ ] The page spec records the tier chosen, the dollar spend, and the measured payload
 
 Performance 100 is **not** on that list. A scroll-scrub route cannot reach it and is
-formally exempt — see `.claude/ASTRO.md`. `scroll-audit.mjs` replaces that assertion with
+formally exempt — see `.claude/rules/ASTRO.md`. `scroll-audit.mjs` replaces that assertion with
 ones Lighthouse cannot make.
 
 ## Gotchas

@@ -16,7 +16,7 @@ with the video switched off.**
    the scripts. Do not retype a recipe that is already a script in `scripts/`.
 2. **Read the design record** if one exists — `<site>/.claude-project/design/` — for the
    palette, tone and copy. The scroll page is a design artefact before it is a render job.
-3. **Load the `astro` skill** if the page lives in an Astro site. `.claude/ASTRO.md` still
+3. **Load the `astro` skill** if the page lives in an Astro site. `.claude/rules/ASTRO.md` still
    applies in full; the only relaxation is the Performance assertion, and it is written down.
 4. Run `graphify query "<task>"` only if `graphify-out/graph.json` covers this site. Do not
    report a graph step you did not run.

@@ -1,3 +1,8 @@
+---
+name: fastapi
+description: Use when implementing a new FastAPI module, use case, endpoint, domain entity, CQRS command/query, repository, event handler, or Alembic migration in the MTNS Academy backend (Clean Architecture + DDD + CQRS, async SQLAlchemy). Step-by-step recipe from graph orientation to the ruff + mypy gate.
+---
+
 # FastAPI Module Skill
 
 Use this skill when asked to implement a new FastAPI module, use case, endpoint, or migration in MTNS Academy.

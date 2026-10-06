@@ -1,3 +1,8 @@
+---
+name: react
+description: Use when building a route, component, form, query, or mutation in the MTNS Academy React frontend — TanStack Router file-based routes, TanStack Query, react-hook-form + Zod, shadcn/ui, axios. Step-by-step recipe ending in the tsc gate.
+---
+
 # React Feature Skill
 
 Use this skill when asked to build a new route, form, component, query, or mutation in MTNS Academy frontend.

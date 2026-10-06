@@ -1,4 +1,9 @@
-Stack, architecture, and non-negotiables for `go-kit/`. Imported by `CLAUDE.md`.
+---
+paths:
+  - "go-kit/**"
+---
+
+Stack, architecture, and non-negotiables for `go-kit/`. Loaded automatically when working on matching paths.
 
 | Concern | Tool |
 |---------|------|

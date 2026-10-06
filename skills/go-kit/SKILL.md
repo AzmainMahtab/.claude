@@ -1,3 +1,8 @@
+---
+name: go-kit
+description: Use when implementing a new bounded context, use case, HTTP endpoint, adapter, event handler, audit event, or Goose migration in go-kit — the Go modular monolith (Hexagonal + DDD + CQRS, chi, sqlx/pgx, ES256 tokens). Step-by-step recipe ending in make check.
+---
+
 # Go Kit Module Skill
 
 Use this skill when asked to implement a new bounded context, use case, endpoint, adapter, or migration in `go-kit`.

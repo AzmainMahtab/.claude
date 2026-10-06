@@ -7,7 +7,7 @@ description: Use when building or changing any Astro site in this workspace — 
 
 Use this skill for any work inside an Astro site: a new page, a new section, a component refactor, a content collection, or a performance regression.
 
-The premise of the whole stack: **HTML is the product, JavaScript is an exception you argue for.** Every rule below follows from that. Read `.claude/ASTRO.md` for the short version; this file is the procedure.
+The premise of the whole stack: **HTML is the product, JavaScript is an exception you argue for.** Every rule below follows from that. Read `.claude/rules/ASTRO.md` for the short version; this file is the procedure.
 
 Two companion references live next to this file — read them instead of guessing:
 

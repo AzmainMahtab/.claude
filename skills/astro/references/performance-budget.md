@@ -10,7 +10,7 @@ This is a checklist, not advice. Work it top down. Each item names the audit it 
 > apply in full and are still asserted at 100. Performance is replaced by a hard payload
 > budget and `scroll-audit.mjs`, which fails on things Lighthouse cannot see: a phone served
 > a desktop master, video fetched under reduced motion, focus in invisible copy, a 404
-> `og:image`, decoded clips held past the ceiling. The rule lives in `.claude/ASTRO.md`; the
+> `og:image`, decoded clips held past the ceiling. The rule lives in `.claude/rules/ASTRO.md`; the
 > numbers and the reasoning live in `.claude/skills/scroll/references/budget.md`. Nothing
 > else on any other route is exempt from anything.
 

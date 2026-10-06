@@ -1,4 +1,10 @@
-Design practice for this workspace — how designs are made, recorded, and handed to code. Imported by `CLAUDE.md`.
+---
+paths:
+  - "*-web/**"
+  - "**/.claude-project/design/**"
+---
+
+Design practice for this workspace — how designs are made, recorded, and handed to code. Loaded automatically when working on matching paths.
 
 Designs live in Pencil (`.pen` files, accessed **only** through the `pencil` MCP tools — never `Read`/`Grep` on a `.pen`). Their written record lives in the project's records directory.
 

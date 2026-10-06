@@ -1,4 +1,9 @@
-Stack, architecture, and non-negotiables for every Astro site in this workspace. Imported by `CLAUDE.md`.
+---
+paths:
+  - "*-web/**"
+---
+
+Stack, architecture, and non-negotiables for every Astro site in this workspace. Loaded automatically when working on matching paths.
 
 | Concern | Tool |
 |---------|------|

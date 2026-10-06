@@ -5,7 +5,7 @@ that ships nothing of its own. Astro also closes four of this skill's gaps for f
 bundled `<script>` is minified, `astro:assets` gives the posters AVIF+WebP with explicit
 dimensions, `Base.astro` already owns the head, and `@astrojs/sitemap` already exists.
 
-Read `.claude/ASTRO.md` and the `astro` skill first — everything there still applies. This
+Read `.claude/rules/ASTRO.md` and the `astro` skill first — everything there still applies. This
 file is only what is different about a scroll-scrub route.
 
 ## Where the pieces live

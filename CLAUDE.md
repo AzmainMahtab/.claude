@@ -1,18 +1,19 @@
-# MTNS Academy — Claude Workflow
+# Workspace — Claude Workflow
 
 ## Project Layout
 
 ```
 repo/
-├── mtns-academy-backend/   # FastAPI modular monolith (Python 3.14+, uv)
-├── mtns-academy-frontend/  # React 19 SPA (Vite, TanStack Router/Query, shadcn)
-├── go-kit/                 # Go modular monolith starter kit (Hexagonal + DDD + CQRS)
-├── nest-kit/               # NestJS modular monolith starter kit (Hexagonal + DDD + CQRS)
-├── <name>-web/             # Astro sites — marketing/content. Design records in .claude-project/design/
-└── graphify-out/           # Knowledge graph — check this first on any task
+├── mtns/mtns-academy-frontend/  # React 19 SPA (Vite, TanStack Router/Query, shadcn)
+├── go-kit/                      # Go modular monolith starter kit (Hexagonal + DDD + CQRS)
+├── <name>-web/                  # Astro sites — marketing/content. Design records in .claude-project/design/
+├── …                            # other product repos (potential-desk, athlee, elite4print, …)
+└── graphify-out/                # Knowledge graph of the whole workspace
 ```
 
-Authoritative architecture rules live next to the code. Always read the relevant one before touching it:
+`mtns-academy-backend/` (FastAPI) and `nest-kit/` (NestJS) are not checked out on every machine; their rules still apply wherever they are.
+
+Authoritative architecture rules live next to the code. Read the relevant one before touching it:
 
 | Codebase | Rules file |
 |----------|------------|
@@ -20,66 +21,27 @@ Authoritative architecture rules live next to the code. Always read the relevant
 | `go-kit/` | `go-kit/AGENTS.md` |
 | `nest-kit/` | `nest-kit/AGENTS.md` |
 
-Per-stack detail lives in its own file, imported below: `FASTAPI.md`, `REACT.md`, `GO-KIT.md`, `NEST-KIT.md`.
+Per-stack rules live in `.claude/rules/` and load automatically when you work on matching files: `FASTAPI.md`, `REACT.md`, `ASTRO.md`, `DESIGN.md`, `GO-KIT.md`, `NEST-KIT.md`.
 
 ---
 
-## Graphify — MANDATORY First Step on Every Task
+## Graphify — First Step on Every Task
 
-Before touching any file or writing any code, run the graph. No exceptions.
+Before touching any file or writing any code, query the graph:
 
 ```bash
-# Step 1 — orient yourself (always do this first):
-cat graphify-out/GRAPH_REPORT.md
-
-# Step 2 — query what's relevant to the task:
 graphify query "<what you're about to build or change>"       # BFS — broad discovery
 graphify query "<specific concept>" --dfs                      # DFS — trace a dependency chain
 graphify path "NodeA" "NodeB"                                  # shortest path between two things
+graphify explain "<concept>"                                   # one focused concept
 ```
 
-This tells you: what already exists, what depends on what, where to plug in, and what you'll break.
+This tells you what already exists, what depends on what, where to plug in, and what you'll break.
 Only after running the graph should you read files or write code.
 
-Key god nodes (most connected): `User`, `LoginUseCase`, `RegisterUserUseCase`, `IEventBus`, `InMemoryUserRepository`, `UserStatus`.
+`graphify-out/GRAPH_REPORT.md` is tens of thousands of lines — never `cat` it. Read it only for a broad architecture review, and only the section you need.
 
-The graph does **not** cover `nest-kit/` — see `NEST-KIT.md` for what to read instead.
-
----
-
-## Backend Stack
-
-@FASTAPI.md
-
----
-
-## Frontend Stack
-
-@REACT.md
-
----
-
-## Astro Sites (any `*-web/` marketing or content site)
-
-@ASTRO.md
-
----
-
-## Design Practice (all projects)
-
-@DESIGN.md
-
----
-
-## Go Kit Stack (`go-kit/`)
-
-@GO-KIT.md
-
----
-
-## Nest Kit Stack (`nest-kit/`)
-
-@NEST-KIT.md
+The graph does **not** cover `nest-kit/` — see `.claude/rules/NEST-KIT.md` for what to read instead.
 
 ---
 

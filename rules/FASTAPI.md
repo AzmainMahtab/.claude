@@ -1,4 +1,9 @@
-Stack and architecture for `mtns-academy-backend/`. Imported by `CLAUDE.md`.
+---
+paths:
+  - "**/mtns-academy-backend/**"
+---
+
+Stack and architecture for `mtns-academy-backend/`. Loaded automatically when working on matching paths.
 
 | Concern | Tool |
 |---------|------|

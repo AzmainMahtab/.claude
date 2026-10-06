@@ -1,4 +1,9 @@
-Stack and conventions for `mtns-academy-frontend/`. Imported by `CLAUDE.md`.
+---
+paths:
+  - "**/mtns-academy-frontend/**"
+---
+
+Stack and conventions for `mtns-academy-frontend/`. Loaded automatically when working on matching paths.
 
 | Concern | Tool |
 |---------|------|
